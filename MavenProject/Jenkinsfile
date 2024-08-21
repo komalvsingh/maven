@@ -1,0 +1,23 @@
+pipeline{
+  agent any
+
+  stages{
+    stage('build') {
+      steps {
+        sh 'mvn clean package'
+        }
+        post{
+          success{
+            echo 'Build successful'
+            archiveArtifacts artifacts:'**/target/*.war'
+          }
+        }
+        }
+        stage('deploy to tomcat server'){
+          steps{
+            deploy adapters: [tomcat9(path: '', url: 'http://localhost:9999/')], contextPath: null, war: '**/*.war'
+          }
+        }
+             
+  }
+}
